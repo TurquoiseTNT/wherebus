@@ -28,15 +28,8 @@
             const go = document.getElementById("go");
             const ticket = document.getElementById("ticketid");
             go.addEventListener("click", function() {
-                var xmlHttp = new XMLHttpRequest();
-                xmlHttp.open( "GET", "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + ticket.value, false ); // false for synchronous request
-                xmlHttp.send( null );
-                if (xmlHttp.responseText.hasOwnProperty("error")) {
-                    alert(xmlHttp.responseText[error]);
-                } else {
-                    localStorage.setItem("ticket", document.getElementById("ticketid").value);
-                    window.location.href = "home.html";
-                }
+                localStorage.setItem("ticket", document.getElementById("ticketid").value);
+                window.location.href = "home.html";
             });
         </script>
     </body>
