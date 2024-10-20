@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Home | WhereBus</title>
+        <link rel="stylesheet" href="lang.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""
+        />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin="">
+        </script>
+    </head>
+    <body>
+        <h1 class="bold">whereBus</h1>
+        <h3 class="bold">My Ticket</h3>
+
+        <iframe id="qr" width="100%" height="310px" scrolling="no" style="overflow: hidden"></iframe>
+
+        <h3 id="quo">GOOD MORNING</h2>
+        <h1 id="name">TICKET H.</h2>
+
+        <div id="map" width="100vw" height="310px"></div>
+
+        <script>
+            const qr = document.getElementById("qr");
+            qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket"), false );
+            xmlHttp.send( null );
+            const ticket = JSON.parse(xmlHttp.responseText);
+            document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + ticket["passenger"]["last_name"];
+            var t = new Date();
+            var h = t.getHours();
+            if (h < 12) {
+                document.getElementById("quo").innerHTML = "GOOD MORNING";
+            } else {
+                document.getElementById("quo").innerHTML = "GOOD AFTERNOON";
+            }
+            var prevLoc = [0, 0];
+            function checkLocation() {
+                var mapReq = new XMLHttpRequest();
+                mapReq.open( "GET", "https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket"), false );
+                mapReq.send( null );
+                // get time 5 mins ago
+                var t = new Date();
+                t.setMinutes(t.getMinutes() - 5);
+                mapReqParsed = JSON.parse(mapReq.responseText);
+                if (mapReqParsed["last_updated"] < t) {
+                    if(mapReqParsed["lat"] != prevLoc[0] || mapReqParsed["long"] != prevLoc[1]) {
+                        prevLoc[0] = mapReqParsed["lat"];
+                        prevLoc[1] = mapReqParsed["long"];
+                        updateMapBus(mapReqParsed["lat"], mapReqParsed["long"]);
+                    }
+                }
+            }
+            var initMap = new XMLHttpRequest();
+                initMap.open( "GET", "https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket"), false );
+                initMap.send({"Origin": "*"});
+            mapRqp = JSON.parse(initMap.responseText)
+            var t = new Date();
+            t.setMinutes(t.getMinutes() - 5);
+            if (mapRqp["last_updated"] > t) {
+                var map = L.map('map').setView([mapRqp["lat"], mapRqp["long"]], 3);
+                L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=0d302bbdc3d84bedb7b4fa2327463704', {
+                    maxZoom: 10,
+                    attribution: '&copy; TurquoiseTNT Multimedia'
+                }).addTo(map);
+                var bus = L.marker([51.5, -0.09]).addTo(map);
+                function updateMapBus(x, y) {
+                    map.setView([x, y], 3)
+                    bus.setLatLng([x, y]);
+                }
+                setInterval(checkLocation, 30000);
+            } else {
+                document.getElementById("map").innerHTML = "No Location Sent in Past 5 Minutes";
+            }
+        </script>
+    </body>
+</html>

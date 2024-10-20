@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Setup | WhereBus</title>
+        <link rel="stylesheet" href="lang.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <h1 class="bold">whereBus</h1>
+        <h3 class="bold">Setup</h3>
+        <div class="container">
+            <div class="row">
+              <div class="col-25">
+                <label for="fname">Paste Your Ticket ID</label>
+              </div>
+              <div class="col-75">
+                <input type="text" id="ticketid" name="ticketid" placeholder="fd30056a-7c27...">
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <button id="go">Submit</button>
+            </div>
+        </div>
+
+        <script>
+            const go = document.getElementById("go");
+            const ticket = document.getElementById("ticketid");
+            go.addEventListener("click", function() {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.open( "GET", "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + ticket.value, false ); // false for synchronous request
+                xmlHttp.send( null );
+                if (xmlHttp.responseText.hasOwnProperty("error")) {
+                    alert(xmlHttp.responseText[error]);
+                } else {
+                    localStorage.setItem("ticket", document.getElementById("ticketid").value);
+                    window.location.href = "home.html";
+                }
+            });
+        </script>
+    </body>
+</html>
