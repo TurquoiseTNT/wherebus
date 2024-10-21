@@ -2,9 +2,26 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Home | WhereBus</title>
-        <link rel="stylesheet" href="lang.css">
+        <title>Home | whereBus</title>
+        <link rel="icon" type="image/png" href="/images/wb.png">
+        <link rel="apple-touch-icon" href="/images/wb.png">
+        <meta name="apple-mobile-web-app-title" content="whereBus">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="UTF-8">
+        <meta name="description" content="The Better Bus Tracker">
+        <meta name="keywords" content="Shuttle ID, Shuttle Bus, SBC, SBC Coaches">
+        <meta property="og:title" content="whereBus" />
+        <meta property="og:description" content="The Better Bus Tracker" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:site_name" content="whereBus" />
+        <meta property="og:url" content="https://wherebus.turquoisetnt.one/" />
+        <meta property="og:image:alt" content="Where Bus Logo" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image" content="https://wherebus.turquoisetnt.one/images/where.png" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="lang.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
             integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
             crossorigin=""
@@ -14,79 +31,161 @@
             crossorigin="">
         </script>
     </head>
-    <body>
-        <h1 class="bold">whereBus</h1>
-        <h3 class="bold">My Ticket</h3>
+    <body><nav class="navbar sticky-top  bg-dark navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand bold" href="#">whereBus</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#qr">Ticket</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#map">Map</a>
+              </li>
+            </ul>
+            <form class="d-flex" role="search" action="/reset.html">
+              <button class="btn btn-outline-danger" type="submit">Log Out</button>
+            </form>
+          </div>
+        </div>
+      </nav>
 
-        <iframe id="qr" width="100%" height="310px" scrolling="no" style="overflow: hidden"></iframe>
-
+        </br>
         <h3 id="quo">GOOD MORNING</h2>
         <h1 id="name">TICKET H.</h2>
+        </br>
+
+
+        <iframe id="qr" width="100%" height="310px" scrolling="no" style="overflow: hidden; margin-bottom: 5vh;"></iframe>
+
 
         <div id="map" width="100vw" height="310px"></div>
+
+        <nav class="navbar bg-dark fixed-bottom bg-body-tertiary" data-bs-theme="dark">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="https://turquoisetnt.one/">Made with ❤️ by TurquoiseTNT</a>
+            </div>
+          </nav>
+
 
         <script>
             const qr = document.getElementById("qr");
             qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
-            async function getData() {
-               const ticketurl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket");
+
+            const ticketUrl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket");
+            const locationUrl = "https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket");
+
+            var busTracking = false;
+            var busLocResp = false;
+
+
+            async function initTicket() {
                try {
-                  const tResp = await fetch(ticketurl);
+                  const tResp = await fetch(ticketUrl);
                   if (!tResp.ok) {
                      throw new Error(`Response status: ${tResp.status}`);
                   }
-                  const json = await tResp.json();
-                  alert(json);
+                  const ticket = await tResp.json();
+                  document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + ticket["passenger"]["last_name"];
+                  if (ticket["has_tracking"]){
+                    busTracking = true;
+                  }
                } catch (error) {
-                  alert(error.message);
+                  alert("An Error Occured - Fetch Out: " + error.message);
                }
             }
-            document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + ticket["passenger"]["last_name"];
+            async function getBusLocationData() {
+                if (isLocationResponding()) {
+                    try {
+                        const lResp = await fetch(locationUrl);
+                        if (!lResp.ok) {
+                            throw new Error(`Response status: ${lResp.status}`);
+                        }
+                        return await lResp.json();
+                    } catch (error) {
+                        alert("An Error Occured - Fetch Out: " + error.message);
+                    }
+                }
+            }
+            async function isLocationResponding() {
+                if (busTracking) {
+                    try {
+                        const lCResp = await fetch(locationUrl);
+                        if (!lCResp.ok) {
+                            throw new Error(`Response status: ${lCResp.status}`);
+                        }
+                        const bus = await lCResp.json();
+                        var t = new Date();
+                        t.setMinutes(t.getMinutes() - 5);
+                        if (bus["last_updated"] > t) {
+                            busLocResp = true;
+                        }
+                    } catch (error) {
+                        alert("An Error Occured - Fetch Out: " + error.message);
+                    }
+                }
+            }
             var t = new Date();
             var h = t.getHours();
             if (h < 12) {
                 document.getElementById("quo").innerHTML = "GOOD MORNING";
-            } else {
+            } else if (h < 18) {
                 document.getElementById("quo").innerHTML = "GOOD AFTERNOON";
-            }
-            var prevLoc = [0, 0];
-            function checkLocation() {
-                var mapReq = new XMLHttpRequest();
-                mapReq.open( "GET", "https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket"), false );
-                mapReq.send( null );
-                // get time 5 mins ago
-                var t = new Date();
-                t.setMinutes(t.getMinutes() - 5);
-                mapReqParsed = JSON.parse(mapReq.responseText);
-                if (mapReqParsed["last_updated"] < t) {
-                    if(mapReqParsed["lat"] != prevLoc[0] || mapReqParsed["long"] != prevLoc[1]) {
-                        prevLoc[0] = mapReqParsed["lat"];
-                        prevLoc[1] = mapReqParsed["long"];
-                        updateMapBus(mapReqParsed["lat"], mapReqParsed["long"]);
-                    }
-                }
-            }
-            var initMap = new XMLHttpRequest();
-                initMap.open( "GET", "https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket"), false );
-                initMap.send({"Origin": "*"});
-            mapRqp = JSON.parse(initMap.responseText)
-            var t = new Date();
-            t.setMinutes(t.getMinutes() - 5);
-            if (mapRqp["last_updated"] > t) {
-                var map = L.map('map').setView([mapRqp["lat"], mapRqp["long"]], 3);
-                L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=0d302bbdc3d84bedb7b4fa2327463704', {
-                    maxZoom: 10,
-                    attribution: '&copy; TurquoiseTNT Multimedia'
-                }).addTo(map);
-                var bus = L.marker([51.5, -0.09]).addTo(map);
-                function updateMapBus(x, y) {
-                    map.setView([x, y], 3)
-                    bus.setLatLng([x, y]);
-                }
-                setInterval(checkLocation, 30000);
             } else {
-                document.getElementById("map").innerHTML = "No Location Sent in Past 5 Minutes";
+                document.getElementById("quo").innerHTML = "GOOD EVENING";
             }
+            function updateMapBus(x, y) {
+                map.setView([x, y], 3)
+                bus.setLatLng([x, y]);
+            }
+            async function updateBusLoc() {
+                var busLoc = await getBusLocationData();
+                updateMapBus(busLoc["lat"], busLoc["long"]);
+            }
+            async function busIcon() {
+                var MarkerIcon = L.Icon.extend({
+                    options: {
+                       iconSize:     [38, 95],
+                       shadowSize:   [50, 64],
+                       iconAnchor:   [22, 94],
+                       shadowAnchor: [4, 62],
+                       popupAnchor:  [-3, -76]
+                    }
+                });
+                var busIcon = new LeafIcon({
+                    iconUrl: '/images/bus.png',
+                    shadowUrl: ''
+                })
+            }
+            async function startApp() {
+                await initTicket()
+                if (busTracking) {
+                    await isLocationResponding();
+                    if (busLocResp) {
+                        var busLoc = await getBusLocationData();
+                        var map = L.map('map').setView([busLoc["lat"], busLoc["long"]], 3);
+                        L.tileLayer('https://tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png?apikey=0d302bbdc3d84bedb7b4fa2327463704', {
+                            maxZoom: 10,
+                            attribution: '&copy; TurquoiseTNT Multimedia'
+                        }).addTo(map);
+                        await busIcon();
+                        var bus = L.marker([51.5, -0.09], {icon: busIcon}).addTo(map);
+                        setInterval(updateBusLoc, 30000);
+                    } else {
+                        document.getElementById("map").innerHTML = "<h4>No Location Sent in Past 5 Minutes</h4>";
+                    }
+                } else {
+                    document.getElementById("map").innerHTML = "<h4>Location Services is Not Activated on Your Ticket</h4>";
+                }
+            }
+            startApp();
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
     </body>
 </html>
