@@ -31,6 +31,8 @@
             const turl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket")
             try {
                 resp = await fetch(turl)
+            } catch (error) {
+                alert(error);
             }
             const ticket = JSON.parse(await resp);
             document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + ticket["passenger"]["last_name"];
