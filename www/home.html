@@ -28,13 +28,19 @@
         <script>
             const qr = document.getElementById("qr");
             qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
-            const turl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket")
-            try {
-                resp = await fetch(turl)
-            } catch (error) {
-                alert(error);
+            async function getData() {
+               const ticketurl = = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket");
+               try {
+                  const tResp = await fetch(ticketurl);
+                  if (!tResp.ok) {
+                     throw new Error(`Response status: ${tResp.status}`);
+                  }
+                  const json = await tResp.json();
+                  alert(json);
+               } catch (error) {
+                  alert(error.message);
+               }
             }
-            const ticket = JSON.parse(await resp);
             document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + ticket["passenger"]["last_name"];
             var t = new Date();
             var h = t.getHours();
