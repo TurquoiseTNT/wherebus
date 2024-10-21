@@ -29,7 +29,7 @@
             const qr = document.getElementById("qr");
             qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
             async function getData() {
-               const ticketurl = = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket");
+               const ticketurl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket");
                try {
                   const tResp = await fetch(ticketurl);
                   if (!tResp.ok) {
