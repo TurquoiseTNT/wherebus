@@ -103,7 +103,7 @@
             async function getBusLocationData() {
                 if (isLocationResponding()) {
                     try {
-                        const lResp = await fetch(locationUrl);
+                        const lResp = await fetch(locationUrl, {headers: {"Allow-Origin": "https://wherebus.turquoisetnt.one"}});
                         if (!lResp.ok) {
                             throw new Error(`Response status: ${lResp.status}`);
                         }
@@ -116,7 +116,7 @@
             async function isLocationResponding() {
                 if (busTracking) {
                     try {
-                        const lCResp = await fetch(locationUrl);
+                        const lCResp = await fetch(locationUrl, {headers: {"Allow-Origin": "https://wherebus.turquoisetnt.one"}});
                         if (!lCResp.ok) {
                             throw new Error(`Response status: ${lCResp.status}`);
                         }
