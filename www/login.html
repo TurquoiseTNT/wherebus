@@ -36,10 +36,36 @@
         <script>
             const go = document.getElementById("go");
             const ticket = document.getElementById("ticketid");
-            
+            async function login(){
+              tid = ticket.value;
+              if (tid.startsWith("https://ticket.shuttleid.uk/view/")) {
+                tid = tid.slice(33);
+              } else if (tid.startsWith("http://ticket.shuttleid.uk/view/")) {
+                tid = tid.slice(32);
+              } else if (tid.startsWith("https://ticket.shuttleid.uk/track/")) {
+                tid = tid.slice(34);
+              } else if (tid.startsWith("http://ticket.shuttleid.uk/track/")) {
+                tid = tid.slice(33);
+              }
+              const ticketUrl = "https://cors.wherebus.turquoisetnt.one/?" + encodeURI("https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + tid);
+              try {
+                const res = await fetch(ticketUrl);
+                const data = await res.json();
+                if (data.hasOwnProperty("error")) {
+                  alert("Ticket ID is Invalid");
+                  return;
+                } else {
+                  localStorage.setItem("ticket", tid);
+                  window.location.href = "home.html";
+                }
+              } catch (error) {
+                  alert("An Error Occured - Fetch Out: " + error.message);
+                  return;
+              }
+            }
+
             go.addEventListener("click", function() {
-                localStorage.setItem("ticket", ticket.value);
-                window.location.href = "home.html";
+                login();
             });
         </script>
     </body>

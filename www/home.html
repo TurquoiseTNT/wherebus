@@ -57,8 +57,8 @@
       </nav>
 
         </br>
-        <h3 id="quo">GOOD MORNING</h2>
-        <h1 id="name">TICKET H.</h2>
+        <h3 id="quo">GOOD DAY</h2>
+        <h1 id="name">MR I. M. PARANOID</h2>
         </br>
 
 
@@ -67,7 +67,11 @@
 
         <div id="map" width="100vw" height="310px"></div>
 
-        <nav class="navbar bg-dark fixed-bottom bg-body-tertiary" data-bs-theme="dark">
+        </br>
+        </br>
+        </br>
+
+        <nav class="navbar bg-dark bg-body-tertiary" data-bs-theme="dark">
             <div class="container-fluid">
               <a class="navbar-brand" href="https://turquoisetnt.one/">Made with ❤️ by TurquoiseTNT</a>
             </div>
@@ -76,10 +80,13 @@
 
         <script>
             const qr = document.getElementById("qr");
-            qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
+            var QRC = new qrcodegen.QrCode();
+            qr0 = QRC.encodeText(localStorage.getItem("ticket"), QRC.Ecc.HIGH);
+            var svg = toSvgString(qr0, 5, 10);
+            qr.src = "data:image/svg+xml;base64," + btoa(svg);
 
-            const ticketUrl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket");
-            const locationUrl = "https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket");
+            const ticketUrl = "https://cors.wherebus.turquoisetnt.one/?" + encodeURI("https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket"));
+            const locationUrl = "https://cors.wherebus.turquoisetnt.one/?" + encodeURI("https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket"));
 
             var busTracking = false;
             var busLocResp = false;
@@ -87,7 +94,7 @@
 
             async function initTicket() {
                try {
-                  const tResp = await fetch(ticketUrl, {headers: {"Allow-Origin": "https://wherebus.turquoisetnt.one"}});
+                  const tResp = await fetch(ticketUrl);
                   if (!tResp.ok) {
                      throw new Error(`Response status: ${tResp.status}`);
                   }
@@ -103,7 +110,7 @@
             async function getBusLocationData() {
                 if (isLocationResponding()) {
                     try {
-                        const lResp = await fetch(locationUrl, {headers: {"Allow-Origin": "https://wherebus.turquoisetnt.one"}});
+                        const lResp = await fetch(locationUrl);
                         if (!lResp.ok) {
                             throw new Error(`Response status: ${lResp.status}`);
                         }
@@ -116,7 +123,7 @@
             async function isLocationResponding() {
                 if (busTracking) {
                     try {
-                        const lCResp = await fetch(locationUrl, {headers: {"Allow-Origin": "https://wherebus.turquoisetnt.one"}});
+                        const lCResp = await fetch(locationUrl);
                         if (!lCResp.ok) {
                             throw new Error(`Response status: ${lCResp.status}`);
                         }
@@ -179,9 +186,17 @@
                         setInterval(updateBusLoc, 30000);
                     } else {
                         document.getElementById("map").innerHTML = "<h4>No Location Sent in Past 5 Minutes</h4>";
+                        document.getElementById("map").style.backgroundImage = "url(/images/404-busnotfound.png)";
+                        document.getElementById("map").style.backgroundSize = "contain";
+                        document.getElementById("map").style.backgroundRepeat = "no-repeat";
+                        document.getElementById("map").style.backgroundPosition = "center";
                     }
                 } else {
                     document.getElementById("map").innerHTML = "<h4>Location Services is Not Activated on Your Ticket</h4>";
+                    document.getElementById("map").style.backgroundImage = "url(/images/404-busnotfound.png)";
+                    document.getElementById("map").style.backgroundSize = "contain";
+                    document.getElementById("map").style.backgroundRepeat = "no-repeat";
+                    document.getElementById("map").style.backgroundPosition = "center";
                 }
             }
             startApp();
