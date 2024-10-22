@@ -7,8 +7,8 @@
         <link rel="apple-touch-icon" href="/images/wb.png">
         <meta name="apple-mobile-web-app-title" content="whereBus">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable = no">
         <meta charset="UTF-8">
         <meta name="description" content="The Better Bus Tracker">
         <meta name="keywords" content="Shuttle ID, Shuttle Bus, SBC, SBC Coaches">
@@ -79,6 +79,9 @@
 
 
         <script>
+            if (localStorage.getItem("ticket") === null) {
+                window.location.href = "login.html";
+            }
             const qr = document.getElementById("qr");
             qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
 
