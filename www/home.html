@@ -87,7 +87,7 @@
 
             async function initTicket() {
                try {
-                  const tResp = await fetch(ticketUrl);
+                  const tResp = await fetch(ticketUrl, {headers: {"Allow-Origin": "https://wherebus.turquoisetnt.one"}});
                   if (!tResp.ok) {
                      throw new Error(`Response status: ${tResp.status}`);
                   }
