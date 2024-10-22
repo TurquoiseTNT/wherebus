@@ -80,10 +80,7 @@
 
         <script>
             const qr = document.getElementById("qr");
-            var QRC = new qrcodegen.QrCode();
-            qr0 = QRC.encodeText(localStorage.getItem("ticket"), QRC.Ecc.HIGH);
-            var svg = toSvgString(qr0, 5, 10);
-            qr.src = "data:image/svg+xml;base64," + btoa(svg);
+            qr.src="https://ticket.shuttleid.uk/view/" + localStorage.getItem("ticket");
 
             const ticketUrl = "https://cors.wherebus.turquoisetnt.one/?" + encodeURI("https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + localStorage.getItem("ticket"));
             const locationUrl = "https://cors.wherebus.turquoisetnt.one/?" + encodeURI("https://k4dxsjc6v3.execute-api.eu-west-1.amazonaws.com/prod/live-tracking/customer-ticket/" + localStorage.getItem("ticket"));
