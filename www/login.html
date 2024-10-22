@@ -36,28 +36,10 @@
         <script>
             const go = document.getElementById("go");
             const ticket = document.getElementById("ticketid");
-            async function login(){
-              tid = ticket.value;
-              if (tid.startsWith("http")){
-                tid = tid.slice(33);
-              }
-              const ticketUrl = "https://eryqma7z39.execute-api.eu-west-1.amazonaws.com/prod/customer-ticket/" + tid;
-                try {
-                  const res = await fetch(ticketUrl);
-                  const data = await res.json();
-                  if (data.hasOwnProperty("error")) {
-                    alert("Ticket ID is Invalid");
-                    return;
-                  }
-               } catch (error) {
-                  alert("An Error Occured - Fetch Out: " + error.message);
-                  return;
-               }
-                localStorage.setItem("ticket", tid);
-                window.location.href = "home.html";
-            }
+            
             go.addEventListener("click", function() {
-                login();
+                localStorage.setItem("ticket", ticket.value);
+                window.location.href = "home.html";
             });
         </script>
     </body>
