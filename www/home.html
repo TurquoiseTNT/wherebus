@@ -100,7 +100,7 @@
                      throw new Error(`Response status: ${tResp.status}`);
                   }
                   const ticket = await tResp.json();
-                  if (id.substr(id.length - 1) == " ") {
+                  if (ticket["passenger"]["first_name"].substr(ticket["passenger"]["first_name"].length - 1) == " ") {
                      document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + ticket["passenger"]["last_name"];
                   } else{
                      document.getElementById("name").innerHTML = ticket["passenger"]["first_name"].toUpperCase() + " " + ticket["passenger"]["last_name"];
