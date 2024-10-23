@@ -1,7 +1,7 @@
 {
   "name": "one.turquoisetnt.wherebus",
   "displayName": "wherebus",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Locate ShuttleID Buses and View your ticket.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
