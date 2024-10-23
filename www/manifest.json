@@ -14,21 +14,5 @@
   "display": "standalone",
   "scope": "/",
   "theme_color": "#000000",
-  "shortcuts": [
-    {
-      "name": "View My Ticket",
-      "short_name": "Ticket",
-      "description": "Pulls up the Bus Ticket",
-      "url": "/home#ticket",
-      "icons": [{ "src": "/images/bus.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Where is the Bus",
-      "short_name": "Location",
-      "description": "Where is the Bus?",
-      "url": "/home#map",
-      "icons": [{ "src": "/images/bus.png", "sizes": "192x192" }]
-    }
-  ],
   "description": "The Better Bus App for Shuttle ID Based Tickets"
 }
