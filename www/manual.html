@@ -1,0 +1,10 @@
+<input id="name">Name</input>
+<input id="service">Service</input>
+<input id="tid">ID</input>
+<button id="btn">Submit</button>
+<script>
+    document.getElementById("btn").onclick = submitData();
+    function submitData(){
+        localStorage.setItem("tickets", '[{"name":"' + document.getElementById("name").value + '","service":"' + document.getElementById("service").value + '","tid":"' + document.getElementById("tid").value + '"}]')
+    }
+</script>
