@@ -1,15 +1,15 @@
 {
-  "name": "one.turquoisetnt.wherebus.old",
+  "name": "com.turquoisetnt.wherebus",
   "displayName": "wherebus",
-  "version": "1.1.0",
-  "description": "Locate ShuttleID Buses and View your ticket.",
+  "version": "2.0.0",
+  "description": "The Better Bus App",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "ecosystem:cordova"
   ],
-  "author": "TurquoiseTNT",
+  "author": "TurquoiseTNT Multimedia",
   "license": "Apache-2.0",
   "devDependencies": {
     "cordova-browser": "^7.0.0"

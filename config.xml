@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="one.turquoisetnt.wherebus.old" version="1.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>wherebus</name>
-    <description>Sample Apache Cordova App</description>
-    <author email="dev@cordova.apache.org" href="https://cordova.apache.org">
-        Apache Cordova Team
+<widget id="com.turquoisetnt.wherebus" version="2.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>whereBus</name>
+    <description>The Better Bus App</description>
+    <author email="hi@turquoisetnt.one" href="https://turquoisetnt.one">
+        TurquoiseTNT Multimedia
     </author>
     <content src="index.html" />
     <allow-intent href="http://*/*" />
