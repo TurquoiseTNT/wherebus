@@ -6,5 +6,6 @@
     document.getElementById("btn").onclick = submitData();
     function submitData(){
         localStorage.setItem("tickets", '[{"name":"' + document.getElementById("name").value + '","service":"' + document.getElementById("service").value + '","tid":"' + document.getElementById("tid").value + '"}]')
+        alert("Local Storage / TICKETS Set to: " + localstorage.getItem("tickets"));
     }
 </script>
