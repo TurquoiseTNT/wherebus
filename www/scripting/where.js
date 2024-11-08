@@ -9,14 +9,27 @@ async function initMap() {
         maxZoom: 18,
         attribution: '&copy; Thunderforest Maps'
     }).addTo(map);
+    var userIcon = L.icon({
+        iconUrl: 'images/loc.png',
+        shadowUrl: '',
+    
+        iconSize:     [30, 30],
+        shadowSize:   [0,0],
+        iconAnchor:   [15, 15],
+    });
+    var userLocAc = false;
+    var trackingStarted = false;
     if ('geolocation' in navigator) {
         navigator.geolocation.getCurrentPosition((position) => {
-            userLoc = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
-            map.panTo([position["coords"]["latitude"], position["coords"]["longitude"]]);
+            userLoc = L.marker([position.coords.latitude, position.coords.longitude], {icon: userIcon}).addTo(map);
+            map.panTo([position["coords"]["latitude"], position["coords"]["longitude"]], 18);
+            userLocAc = true;
         });
         navigator.geolocation.watchPosition((position) => {
-            userLoc.setLatLng([position.coords.latitude, position.coords.longitude]);
-            map.panTo([position.coords.latitude, position.coords.longitude]);
+            if (userLocAc && !trackingStarted){
+                userLoc.setLatLng([position.coords.latitude, position.coords.longitude]);
+                map.panTo([position.coords.latitude, position.coords.longitude]);
+            }
         });
     }
 }
@@ -86,6 +99,7 @@ async function getBusLocation(url){
     var t = new Date();
     t.setMinutes(t.getMinutes() - 5);
     if (bus["last_updated"] > t) {
+        trackingStarted = true;
         return [bus["lat"], bus["long"]];
     } else {
         console.log("%cBus Has Not Reported Location in past 5 Minutes!", 'color: lightgreen;');
